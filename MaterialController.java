@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -37,12 +35,7 @@ public class MaterialController {
         sizeField = new JTextField();
         inputPanel.add(sizeField);
         JButton addButton = new JButton("Adicionar");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addMaterial();
-            }
-        });
+        addButton.addActionListener(e -> addMaterial());
         inputPanel.add(addButton);
         mainPanel.add(inputPanel, BorderLayout.NORTH);
         displayArea = new JTextArea();
@@ -50,30 +43,15 @@ public class MaterialController {
         mainPanel.add(scrollPane, BorderLayout.CENTER);
         JPanel buttonPanel = new JPanel(); // Panel to hold the buttons
         JButton showMaterialsButton = new JButton("Mostrar Materiais Cadastrados");
-        showMaterialsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayMaterials();
-            }
-        });
+        showMaterialsButton.addActionListener(e -> displayMaterials());
         buttonPanel.add(showMaterialsButton);
 
         JButton selectMaterialsButton = new JButton("Selecionar Materiais");
-        selectMaterialsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectMaterials();
-            }
-        });
+        selectMaterialsButton.addActionListener(e -> selectMaterials());
         buttonPanel.add(selectMaterialsButton);
 
         JButton calculatorButton = new JButton("Calculadora");
-        calculatorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                calculator();
-            }
-        });
+        calculatorButton.addActionListener(e -> calculator());
         buttonPanel.add(calculatorButton);
 
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);

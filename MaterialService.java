@@ -32,18 +32,12 @@ public class MaterialService {
         for (int i = 1; i < materials.size(); i++) {
             double materialValue = materials.get(i).getValue();
             switch (operation) {
-                case "add":
-                    totalValue += materialValue;
-                    break;
-                case "subtract":
-                    totalValue -= materialValue;
-                    break;
-                case "multiply":
-                    totalValue *= materialValue;
-                    break;
-                default:
-                    // Handle invalid operation
-                    break;
+                case "add" -> totalValue += materialValue;
+                case "subtract" -> totalValue -= materialValue;
+                case "multiply" -> totalValue *= materialValue;
+                default -> {
+                }
+                // Handle invalid operation
             }
         }
         return totalValue;
