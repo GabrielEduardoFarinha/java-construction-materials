@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class MaterialController {
     private final MaterialService materialService;
@@ -12,6 +13,7 @@ public class MaterialController {
     private final JTextField sizeUnitField;
     private final JTextField sizeField;
     private final JTextArea displayArea;
+    private final HashSet<Material> selectedMaterials;
 
     public MaterialController(MaterialService materialService) {
         this.materialService = materialService;
@@ -56,7 +58,6 @@ public class MaterialController {
         });
         buttonPanel.add(showMaterialsButton);
 
-        // New buttons for selecting materials and multiplying values
         JButton selectMaterialsButton = new JButton("Selecionar Materiais");
         selectMaterialsButton.addActionListener(new ActionListener() {
             @Override
@@ -66,17 +67,19 @@ public class MaterialController {
         });
         buttonPanel.add(selectMaterialsButton);
 
-        JButton multiplyValuesButton = new JButton("Multiplicar Valores");
-        multiplyValuesButton.addActionListener(new ActionListener() {
+        JButton calculatorButton = new JButton("Calculadora");
+        calculatorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                multiplyValues();
+                calculator();
             }
         });
-        buttonPanel.add(multiplyValuesButton);
+        buttonPanel.add(calculatorButton);
 
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         frame.add(mainPanel);
+
+        selectedMaterials = new HashSet<>();
     }
 
     public void show() {
@@ -120,15 +123,31 @@ public class MaterialController {
         sizeField.setText("");
     }
 
-    // Method to handle selecting materials
     private void selectMaterials() {
-        // Add your logic here to handle selecting materials
-        JOptionPane.showMessageDialog(frame, "Função de seleção de materiais ainda não implementada.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        ArrayList<Material> materials = materialService.loadMaterials();
+        String[] options = new String[materials.size()];
+        for (int i = 0; i < materials.size(); i++) {
+            options[i] = materials.get(i).toString();
+        }
+        String selectedMaterial = (String) JOptionPane.showInputDialog(frame, "Selecione um material:", "Selecionar Materiais",
+                JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (selectedMaterial != null) {
+            for (Material material : materials) {
+                if (material.toString().equals(selectedMaterial)) {
+                    selectedMaterials.add(material);
+                    break;
+                }
+            }
+            JOptionPane.showMessageDialog(frame, "Material selecionado: " + selectedMaterial, "Seleção Concluída", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
-    // Method to handle multiplying values
-    private void multiplyValues() {
-        // Add your logic here to handle multiplying values
-        JOptionPane.showMessageDialog(frame, "Função de multiplicação de valores ainda não implementada.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+    private void calculator() {
+        if (selectedMaterials.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Nenhum material selecionado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        double totalCost = materialService.calculateTotalValue(new ArrayList<>(selectedMaterials));
+        JOptionPane.showMessageDialog(frame, "Custo total dos materiais selecionados: " + totalCost, "Cálculo Concluído", JOptionPane.INFORMATION_MESSAGE);
     }
 }
