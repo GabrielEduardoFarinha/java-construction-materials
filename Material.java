@@ -1,5 +1,6 @@
 import java.io.Serial;
 import java.io.Serializable;
+
 public class Material implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -8,6 +9,7 @@ public class Material implements Serializable {
     private final double value;
     private final String sizeUnit;
     private final double size;
+
     public Material(String id, String name, double value, String sizeUnit, double size) {
         this.id = id;
         this.name = name;
@@ -15,9 +17,15 @@ public class Material implements Serializable {
         this.sizeUnit = sizeUnit;
         this.size = size;
     }
+
+    public String getName() {
+        return name;
+    }
+
     public double getValue() {
         return value;
     }
+
     @Override
     public String toString() {
         return "Material{" +
@@ -29,4 +37,3 @@ public class Material implements Serializable {
                 '}';
     }
 }
- 

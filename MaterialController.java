@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 
 public class MaterialController {
     private final MaterialService materialService;
@@ -11,7 +11,7 @@ public class MaterialController {
     private final JTextField sizeUnitField;
     private final JTextField sizeField;
     private final JTextArea displayArea;
-    private final HashSet<Material> selectedMaterials;
+    private final HashMap<Material, Integer> selectedMaterials;
 
     public MaterialController(MaterialService materialService) {
         this.materialService = materialService;
@@ -57,7 +57,7 @@ public class MaterialController {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         frame.add(mainPanel);
 
-        selectedMaterials = new HashSet<>();
+        selectedMaterials = new HashMap<>();
     }
 
     public void show() {
@@ -75,7 +75,7 @@ public class MaterialController {
             return;
         }
         try {
-            double value = Double.parseDouble(valueText);
+            double value = Double.parseDouble(valueText.replace(",", "."));
             double size = Double.parseDouble(sizeText);
             // Generate unique ID
             String id = java.util.UUID.randomUUID().toString();
@@ -110,13 +110,27 @@ public class MaterialController {
         String selectedMaterial = (String) JOptionPane.showInputDialog(frame, "Selecione um material:", "Selecionar Materiais",
                 JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (selectedMaterial != null) {
-            for (Material material : materials) {
-                if (material.toString().equals(selectedMaterial)) {
-                    selectedMaterials.add(material);
+            Material material = null;
+            for (Material m : materials) {
+                if (m.toString().equals(selectedMaterial)) {
+                    material = m;
                     break;
                 }
             }
-            JOptionPane.showMessageDialog(frame, "Material selecionado: " + selectedMaterial, "Seleção Concluída", JOptionPane.INFORMATION_MESSAGE);
+            if (material != null) {
+                String quantityText = JOptionPane.showInputDialog(frame, "Quantos " + material.getName() + " você deseja?", "Quantidade", JOptionPane.PLAIN_MESSAGE);
+                try {
+                    int quantity = Integer.parseInt(quantityText);
+                    if (quantity > 0) {
+                        selectedMaterials.put(material, quantity);
+                        JOptionPane.showMessageDialog(frame, "Material selecionado: " + selectedMaterial + " com quantidade: " + quantity, "Seleção Concluída", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Quantidade deve ser maior que zero.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Quantidade inválida.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
 
@@ -125,7 +139,11 @@ public class MaterialController {
             JOptionPane.showMessageDialog(frame, "Nenhum material selecionado.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        double totalCost = materialService.calculateTotalValue(new ArrayList<>(selectedMaterials));
+        double totalCost = 0;
+        for (Material material : selectedMaterials.keySet()) {
+            int quantity = selectedMaterials.get(material);
+            totalCost += material.getValue() * quantity;
+        }
         JOptionPane.showMessageDialog(frame, "Custo total dos materiais selecionados: " + totalCost, "Cálculo Concluído", JOptionPane.INFORMATION_MESSAGE);
     }
 }
