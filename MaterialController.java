@@ -120,7 +120,7 @@ public class MaterialController {
             if (selectedMaterialString != null) {
                 for (Material material : materials) {
                     if (material.toString().equals(selectedMaterialString)) {
-                        String quantityText = JOptionPane.showInputDialog(frame, "Quantos " + material.getName() + " você deseja?", "Quantidade", JOptionPane.PLAIN_MESSAGE);
+                        String quantityText = JOptionPane.showInputDialog(frame, "Quantos " + material.getName() + " o senhor(a) deseja?", "Quantidade", JOptionPane.PLAIN_MESSAGE);
                         int quantity = Integer.parseInt(quantityText);
                         selectedMaterialsWithQuantities.put(material, quantity);
                         JOptionPane.showMessageDialog(frame, "Material selecionado: " + material.getName() + " - Quantidade: " + quantity, "Seleção Concluída", JOptionPane.INFORMATION_MESSAGE);
