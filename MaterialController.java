@@ -86,8 +86,6 @@ public class MaterialController {
             clearInputFields();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(frame, "Valor inválido para preço ou tamanho.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
-        } catch (MaterialCreationException ex) {
-            JOptionPane.showMessageDialog(frame, "Erro ao criar material: " + ex.getMessage(), "Erro de Sistema", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Erro ao adicionar material: " + ex.getMessage(), "Erro de Sistema", JOptionPane.ERROR_MESSAGE);
         }
@@ -147,7 +145,15 @@ public class MaterialController {
             for (Map.Entry<Material, Integer> entry : selectedMaterialsWithQuantities.entrySet()) {
                 totalCost += entry.getKey().getValue() * entry.getValue();
             }
-            JOptionPane.showMessageDialog(frame, "Custo total dos materiais selecionados: " + totalCost, "Cálculo Concluído", JOptionPane.INFORMATION_MESSAGE);
+            double engineerCost = 2200;
+            double taxCost = 0.035 * (totalCost + engineerCost);
+            double finalCost = totalCost + engineerCost + taxCost;
+
+            String resultMessage = String.format(
+                    "Custo total dos materiais: %.2f\nCusto do engenheiro: %.2f\nCusto de impostos: %.2f\nValor final: %.2f",
+                    totalCost, engineerCost, taxCost, finalCost
+            );
+            JOptionPane.showMessageDialog(frame, resultMessage, "Cálculo Concluído", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Erro ao calcular custo total: " + ex.getMessage(), "Erro de Sistema", JOptionPane.ERROR_MESSAGE);
         }
