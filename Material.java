@@ -45,11 +45,11 @@ public class Material implements Serializable {
     @Override
     public String toString() {
         return "Material{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", value=" + value +
-                ", sizeUnit='" + sizeUnit + '\'' +
-                ", size=" + size +
+                "codigo='" + id + '\'' +
+                ", nome do material='" + name + '\'' +
+                ", valor=" + value +
+                ", unidade de medida='" + sizeUnit + '\'' +
+                ", tamanho=" + size +
                 '}';
     }
 }

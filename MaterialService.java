@@ -25,27 +25,4 @@ public class MaterialService {
         return builder.toString();
     }
 
-    public double calculateTotalValue(ArrayList<Material> materials) {
-        double totalValue = 0;
-        for (Material material : materials) {
-            totalValue += material.getValue();
-        }
-        return totalValue;
-    }
-
-    public double calculateTotalValueWithOperation(ArrayList<Material> materials, String operation) {
-        double totalValue = materials.get(0).getValue();
-        for (int i = 1; i < materials.size(); i++) {
-            double materialValue = materials.get(i).getValue();
-            switch (operation) {
-                case "add" -> totalValue += materialValue;
-                case "subtract" -> totalValue -= materialValue;
-                case "multiply" -> totalValue *= materialValue;
-                default -> {
-                }
-                // Handle invalid operation
-            }
-        }
-        return totalValue;
-    }
 }

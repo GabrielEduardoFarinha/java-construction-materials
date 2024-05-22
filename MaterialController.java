@@ -16,7 +16,7 @@ public class MaterialController {
 
     public MaterialController(MaterialService materialService) {
         this.materialService = materialService;
-        frame = new JFrame("Construction Material Frontend");
+        frame = new JFrame("Calculadora P&G");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);
         JPanel mainPanel = new JPanel();
