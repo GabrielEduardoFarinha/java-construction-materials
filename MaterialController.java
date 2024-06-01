@@ -18,7 +18,7 @@ public class MaterialController {
         this.materialService = materialService;
         frame = new JFrame("Calculadora P&G");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(800, 350);
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         JPanel inputPanel = new JPanel();
@@ -54,6 +54,10 @@ public class MaterialController {
         JButton calculatorButton = new JButton("Calculadora");
         calculatorButton.addActionListener(e -> calculator());
         buttonPanel.add(calculatorButton);
+
+        JButton removeFromCalculatorButton = new JButton("Remover do Cálculo");
+        removeFromCalculatorButton.addActionListener(e -> removeFromCalculator());
+        buttonPanel.add(removeFromCalculatorButton);
 
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         frame.add(mainPanel);
@@ -122,7 +126,7 @@ public class MaterialController {
                     if (material.toString().equals(selectedMaterialString)) {
                         String quantityText = JOptionPane.showInputDialog(frame, "Quantos " + material.getName() + " o senhor(a) deseja?", "Quantidade", JOptionPane.PLAIN_MESSAGE);
                         int quantity = Integer.parseInt(quantityText);
-                        selectedMaterialsWithQuantities.put(material, quantity);
+                        selectedMaterialsWithQuantities.put(material, selectedMaterialsWithQuantities.getOrDefault(material, 0) + quantity);
                         JOptionPane.showMessageDialog(frame, "Material selecionado: " + material.getName() + " - Quantidade: " + quantity, "Seleção Concluída", JOptionPane.INFORMATION_MESSAGE);
                         break;
                     }
@@ -145,17 +149,65 @@ public class MaterialController {
             for (Map.Entry<Material, Integer> entry : selectedMaterialsWithQuantities.entrySet()) {
                 totalCost += entry.getKey().getValue() * entry.getValue();
             }
-            double engineerCost = 2200;
-            double taxCost = 0.035 * (totalCost + engineerCost);
-            double finalCost = totalCost + engineerCost + taxCost;
+            double engineerCost = 0.10 * totalCost;
+            double laborCost = 0.30 * totalCost;
+            double taxCost = 0.20 * totalCost;
+            double finalCost = totalCost + engineerCost + laborCost + taxCost;
 
             String resultMessage = String.format(
-                    "Custo total dos materiais: %.2f\nCusto do engenheiro: %.2f\nCusto de impostos: %.2f\nValor final: %.2f",
-                    totalCost, engineerCost, taxCost, finalCost
+                    "Custo total dos materiais: %.2f\nCusto do engenheiro: %.2f\nCusto de mão de obra: %.2f\nCusto de impostos: %.2f\nValor final: %.2f",
+                    totalCost, engineerCost, laborCost, taxCost, finalCost
             );
             JOptionPane.showMessageDialog(frame, resultMessage, "Cálculo Concluído", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Erro ao calcular custo total: " + ex.getMessage(), "Erro de Sistema", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void removeFromCalculator() {
+        if (selectedMaterialsWithQuantities.isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Nenhum material selecionado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String[] options = selectedMaterialsWithQuantities.keySet().stream()
+                .map(Material::toString)
+                .toArray(String[]::new);
+
+        String selectedMaterialString = (String) JOptionPane.showInputDialog(
+                frame,
+                "Selecione um material para remover:",
+                "Remover Materiais",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (selectedMaterialString != null) {
+            Material materialToRemove = null;
+            for (Material material : selectedMaterialsWithQuantities.keySet()) {
+                if (material.toString().equals(selectedMaterialString)) {
+                    materialToRemove = material;
+                    break;
+                }
+            }
+            if (materialToRemove != null) {
+                String quantityText = JOptionPane.showInputDialog(frame, "Quantos " + materialToRemove.getName() + " deseja remover?", "Quantidade", JOptionPane.PLAIN_MESSAGE);
+                try {
+                    int quantityToRemove = Integer.parseInt(quantityText);
+                    int currentQuantity = selectedMaterialsWithQuantities.get(materialToRemove);
+                    if (quantityToRemove >= currentQuantity) {
+                        selectedMaterialsWithQuantities.remove(materialToRemove);
+                        JOptionPane.showMessageDialog(frame, "Todo o material removido: " + materialToRemove.getName(), "Remoção Concluída", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        selectedMaterialsWithQuantities.put(materialToRemove, currentQuantity - quantityToRemove);
+                        JOptionPane.showMessageDialog(frame, "Material atualizado: " + materialToRemove.getName() + " - Quantidade restante: " + (currentQuantity - quantityToRemove), "Remoção Concluída", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Quantidade inválida.", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
     }
 }
