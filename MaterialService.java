@@ -24,5 +24,4 @@ public class MaterialService {
         }
         return builder.toString();
     }
-
 }
