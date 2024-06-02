@@ -17,6 +17,10 @@ public class MaterialService {
         return materialRepository.loadMaterials();
     }
 
+    public void saveMaterials(ArrayList<Material> materials) {
+        materialRepository.saveMaterials(materials);
+    }
+
     public String getAllMaterials(ArrayList<Material> materials) {
         StringBuilder builder = new StringBuilder();
         for (Material material : materials) {
@@ -25,3 +29,4 @@ public class MaterialService {
         return builder.toString();
     }
 }
+//final

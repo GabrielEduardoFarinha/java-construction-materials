@@ -18,7 +18,7 @@ public class MaterialController {
         this.materialService = materialService;
         frame = new JFrame("Calculadora P&G");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 350);
+        frame.setSize(800, 400);
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         JPanel inputPanel = new JPanel();
@@ -58,6 +58,10 @@ public class MaterialController {
         JButton removeFromCalculatorButton = new JButton("Remover do Cálculo");
         removeFromCalculatorButton.addActionListener(e -> removeFromCalculator());
         buttonPanel.add(removeFromCalculatorButton);
+
+        JButton deleteMaterialButton = new JButton("Excluir Materiais");
+        deleteMaterialButton.addActionListener(e -> deleteMaterial());
+        buttonPanel.add(deleteMaterialButton);
 
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         frame.add(mainPanel);
@@ -210,4 +214,46 @@ public class MaterialController {
             }
         }
     }
+
+    private void deleteMaterial() {
+        JFrame deleteFrame = new JFrame("Excluir Materiais");
+        deleteFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        deleteFrame.setSize(400, 300);
+        JPanel deletePanel = new JPanel();
+        deletePanel.setLayout(new BorderLayout());
+
+        ArrayList<Material> materials = materialService.loadMaterials();
+        String[] materialOptions = new String[materials.size()];
+        for (int i = 0; i < materials.size(); i++) {
+            materialOptions[i] = materials.get(i).toString();
+        }
+
+        JComboBox<String> materialComboBox = new JComboBox<>(materialOptions);
+        deletePanel.add(materialComboBox, BorderLayout.NORTH);
+
+        JButton deleteButton = new JButton("Excluir");
+        deleteButton.addActionListener(e -> {
+            String selectedMaterialString = (String) materialComboBox.getSelectedItem();
+            if (selectedMaterialString != null) {
+                Material materialToDelete = null;
+                for (Material material : materials) {
+                    if (material.toString().equals(selectedMaterialString)) {
+                        materialToDelete = material;
+                        break;
+                    }
+                }
+                if (materialToDelete != null) {
+                    materials.remove(materialToDelete);
+                    materialService.saveMaterials(materials);
+                    JOptionPane.showMessageDialog(deleteFrame, "Material excluído: " + materialToDelete.getName(), "Exclusão Concluída", JOptionPane.INFORMATION_MESSAGE);
+                    deleteFrame.dispose();
+                }
+            }
+        });
+
+        deletePanel.add(deleteButton, BorderLayout.SOUTH);
+        deleteFrame.add(deletePanel);
+        deleteFrame.setVisible(true);
+    }
 }
+//final

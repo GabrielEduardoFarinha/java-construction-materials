@@ -53,3 +53,4 @@ public class Material implements Serializable {
                 '}';
     }
 }
+//final
